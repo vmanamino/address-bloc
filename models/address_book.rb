@@ -1,3 +1,5 @@
+require_relative "entry.rb"
+
 class AddressBook
   attr_accessor :entries
   
@@ -6,7 +8,17 @@ class AddressBook
   end
   
   def add_entry(name, phone, email)
-  
-  
+    
+    index = 0
+    @entries.each do |entry|
+      # keep lexicographical order
+      if name < entry.name
+        break
+      end
+      index += 1
+    end
+    
+    @entries.insert(index, Entry.new(name, phone, email))
+      
   end
 end
