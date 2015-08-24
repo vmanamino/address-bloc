@@ -12,10 +12,11 @@ class MenuController
     puts "Main Menu - #{@address_book.entries.count} entries"
     puts "1 - View all entries"
     puts "2 - View entry number n"
-    puts "3 - Create an entry"
-    puts "4 - Search for an entry"
-    puts "5 - Import entries from a CSV"
-    puts "6 - Exit"
+    puts "3 - Remove an entry"
+    puts "4 - Create an entry"
+    puts "5 - Search for an entry"
+    puts "6 - Import entries from a CSV"
+    puts "7 - Exit"
     print "Enter your selection: "
 
     selection = gets.to_i
@@ -32,17 +33,21 @@ class MenuController
         main_menu
       when 3
         system "clear"
-        create_entry
+        remove_entry
         main_menu
       when 4
         system "clear"
-        search_entries
+        create_entry
         main_menu
       when 5
         system "clear"
-        read_csv
+        search_entries
         main_menu
       when 6
+        system "clear"
+        read_csv
+        main_menu
+      when 7
         puts "Good Bye!"
         exit(0)
     else
@@ -54,9 +59,11 @@ class MenuController
   end
 
   def view_all_entries
-
+    number = 0
     @address_book.entries.each do |entry|
-    system "clear"
+      number = number + 1
+      system "clear"
+      puts number
       puts entry.to_s
       entry_submenu(entry)
     end
@@ -67,14 +74,28 @@ class MenuController
 
   def view_entry_number
     system "clear"
-    puts "Give entry number: "
-    number = gets.chomp
-    number = number.to_i - 1
+    print "Give entry number: "
+    entry = gets.chomp
+    entry = entry.to_i
 
-    puts "#{number}"
-   # entry = @address_book.entries[number]
+    entry = @address_book.view_entry_number(entry)
+    entry = entry.to_s
+    system "clear"
+    puts "#{entry}"
     #puts "#{entry.name}"
-    # system "clear"
+    system "clear"
+  end
+
+  def remove_entry
+    system "clear"
+    puts "Remove AddressBloc Entry"
+    print "Provide Entry #: "
+    entry_number = gets.to_i - 1
+    entry = @address_book.entries[entry_number]
+    @address_book.remove_entry(entry_number)
+
+    system "clear"
+    puts "Entry #{entry_number} (#{entry.name}, #{entry.phone_number}, #{entry.email}) removed."
   end
 
   def create_entry
