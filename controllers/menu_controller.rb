@@ -80,8 +80,8 @@ class MenuController
 
     entry = @address_book.view_entry_number(entry)
     entry = entry.to_s
-    system "clear"
-    puts "#{entry}"
+    # system "clear"
+    prints "#{entry}"
     #puts "#{entry.name}"
     system "clear"
   end
