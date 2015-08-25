@@ -73,15 +73,19 @@ class MenuController
 
   end
 
-  def view_entry_number
+  def view_entry_number(message="Give entry number: ")
     def error
       system "clear"
-      puts "You need to enter the proper integer to do that!"
+      message = "You need to enter the proper integer to do that!\nEnter m to return to the main menu\nOr enter the proper entry number: "
+      view_entry_number(message)
     end
     system "clear"
-    print "Give entry number: "
+    print message
     entry = gets.chomp
-    if entry.to_i.to_s != entry
+    if entry == 'm'
+      system "clear"
+      main_menu
+    elsif entry.to_i.to_s != entry
       error
     else
       entry = entry.to_i
