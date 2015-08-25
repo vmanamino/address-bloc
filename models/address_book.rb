@@ -21,7 +21,8 @@ class AddressBook
 
   def view_entry_number(entry)
     index = get_index(entry)
-    @entries[index]
+    entry = @entries[index]
+    return entry
   end
 
   def remove_entry(entry)

@@ -51,7 +51,7 @@ RSpec.describe AddressBook do
       book.remove_entry(2)
       expect(book.entries.size).to eq 1
     end
-    it "removes the correct entry" do
+    it "removes the correct entry by number of entry" do
       book = AddressBook.new
       # add_entry keeps alphabetical order, here entries added explicitly in ABC order
       book.add_entry('Ada Lovelace', '010.012.1815', 'augusta.king@lovelace.com')

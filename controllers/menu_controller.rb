@@ -12,7 +12,7 @@ class MenuController
     puts "Main Menu - #{@address_book.entries.count} entries"
     puts "1 - View all entries"
     puts "2 - View entry number n"
-    puts "3 - Remove an entry"
+    puts "3 - Remove an entry n"
     puts "4 - Create an entry"
     puts "5 - Search for an entry"
     puts "6 - Import entries from a CSV"
@@ -59,13 +59,14 @@ class MenuController
   end
 
   def view_all_entries
-    number = 0
+    # @number = 0
     @address_book.entries.each do |entry|
-      number = number + 1
+      @number = @address_book.entries.index(entry)
+      @number = @number + 1
       system "clear"
-      puts number
+      puts @number
       puts entry.to_s
-      entry_submenu(entry)
+      option_submenu(entry)
     end
     system "clear"
     puts "End of entries"
@@ -73,17 +74,20 @@ class MenuController
   end
 
   def view_entry_number
+    def error
+      system "clear"
+      puts "You need to enter the proper integer to do that!"
+    end
     system "clear"
     print "Give entry number: "
     entry = gets.chomp
-    entry = entry.to_i
-
-    entry = @address_book.view_entry_number(entry)
-    entry = entry.to_s
-    # system "clear"
-    prints "#{entry}"
-    #puts "#{entry.name}"
-    system "clear"
+    if entry.to_i.to_s != entry
+      error
+    else
+      entry = entry.to_i
+      eintrag = @address_book.view_entry_number(entry)
+      puts eintrag.to_s
+    end
   end
 
   def remove_entry
@@ -93,7 +97,6 @@ class MenuController
     entry_number = gets.to_i - 1
     entry = @address_book.entries[entry_number]
     @address_book.remove_entry(entry_number)
-
     system "clear"
     puts "Entry #{entry_number} (#{entry.name}, #{entry.phone_number}, #{entry.email}) removed."
   end
@@ -107,12 +110,9 @@ class MenuController
     phone = gets.chomp
     print "Email: "
     email = gets.chomp
-
     @address_book.add_entry(name, phone, email)
-
     system "clear"
     puts "New entry created"
-
   end
 
   def search_entries
@@ -123,7 +123,7 @@ class MenuController
 
   end
 
-  def entry_submenu(entry)
+  def option_submenu(entry)
 
     puts "n - next entry"
     puts "d - delete entry"
@@ -135,6 +135,8 @@ class MenuController
     case selection
       when "n"
       when "d"
+        system "clear"
+        @address_book.remove_entry(@number)
       when "e"
       when "m"
         system "clear"
