@@ -95,8 +95,8 @@ class MenuController
     system "clear"
     puts "Remove AddressBloc Entry"
     print "Provide Entry #: "
-    entry_number = gets.to_i - 1
-    entry = @address_book.entries[entry_number]
+    entry_number = gets.to_i
+    entry = @address_book.entries[entry_number - 1]
     @address_book.remove_entry(entry_number)
     system "clear"
     puts "Entry #{entry_number} (#{entry.name}, #{entry.phone_number}, #{entry.email}) removed."
