@@ -121,7 +121,13 @@ class MenuController
   end
 
   def read_csv
-
+    system "clear"
+    puts "Read in entries from a CSV formatted file"
+    print "Enter the file: "
+    file_name = gets.chomp
+    @address_book.import_from_csv(file_name)
+    system "clear"
+    puts "Entries added!"
   end
 
   def option_submenu(entry)
