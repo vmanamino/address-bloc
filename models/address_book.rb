@@ -67,9 +67,10 @@ class AddressBook
     counter = 0
     count = entries.length
     while counter < count
-      unless name != entries[counter].name
-        return entries[counter]
-      end
+      return entries[counter] if name == entries[counter].name
+#       unless name != entries[counter].name
+#         return entries[counter]
+#       end
       counter = counter + 1
     end
     return nil
