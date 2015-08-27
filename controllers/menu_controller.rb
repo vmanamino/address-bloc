@@ -5,6 +5,7 @@ class MenuController
 
   def initialize
     @address_book = AddressBook.new
+    @drop_value = 0
   end
 
   def main_menu
@@ -16,7 +17,8 @@ class MenuController
     puts "4 - Create an entry"
     puts "5 - Search for an entry"
     puts "6 - Import entries from a CSV"
-    puts "7 - Exit"
+    puts "7 - Purge Address Book"
+    puts "8 - Exit"
     print "Enter your selection: "
 
     selection = gets.to_i
@@ -48,6 +50,10 @@ class MenuController
         read_csv
         main_menu
       when 7
+        system "clear"
+        purge_book
+        main_menu
+      when 8
         puts "Good Bye!"
         exit(0)
     else
@@ -60,13 +66,13 @@ class MenuController
 
   def view_all_entries
     # @number = 0
-    @address_book.entries.each do |entry|
+    @address_book.entries.drop(@drop_value).each do |entry|
       @number = @address_book.entries.index(entry)
       @number = @number + 1
       system "clear"
       puts @number
       puts entry.to_s
-      option_submenu(entry)
+      option_submenu(@number)
     end
     system "clear"
     puts "End of entries"
@@ -102,6 +108,31 @@ class MenuController
     puts "Entry #{entry_number} (#{entry.name}, #{entry.phone_number}, #{entry.email}) removed."
   end
 
+  def edit_entry(number)
+    print "Update name: "
+    name = gets.chomp
+    if name.empty? || !name.empty?
+      puts ""
+    end
+    print "Update phone number: "
+    phone_number = gets.chomp
+    if phone_number.empty? || !phone_number.empty?
+      puts ""
+    end
+    print "Update email: "
+    email = gets.chomp
+    if email.empty? || !email.empty?
+      puts ''
+    end
+    book = @address_book
+    entry = book.entries[book.get_index(number)]
+    entry.name = name if !name.empty?
+    entry.phone_number = phone_number if !phone_number.empty?
+    entry.email = email if !email.empty?
+    puts "Updated entry: "
+    puts entry
+  end
+
   def create_entry
     system "clear"
     puts "New AddressBloc Entry"
@@ -129,9 +160,42 @@ class MenuController
     puts "Read in entries from a CSV formatted file"
     print "Enter the file: "
     file_name = gets.chomp
-    @address_book.import_from_csv(file_name)
+
+    if file_name.empty?
+      system "clear"
+      puts "No file provided"
+      main_menu
+    end
+
+    begin
+      entries_count = @address_book.import_from_csv(file_name).count
+      system "clear"
+      puts "#{entries_count} new entries added from #{file_name}"
+    rescue
+      puts "#{file_name} is not a valid csv file"
+      read_csv
+    end
+  end
+
+  def search_entries
+    print "Search entries by name: "
+    name = gets.chomp
+    match = @address_book.binary_search(name)
+
+    if match
+      entry_number = @address_book.entries.index(match)
+      puts entry_number + 1
+      puts match.to_s
+      search_submenu(entry_number)
+    else
+      puts "no match found for #{name}"
+    end
+  end
+
+  def purge_book
+    @address_book.entries.clear
     system "clear"
-    puts "Entries added!"
+    puts "all entries have been wiped out!"
   end
 
   def option_submenu(entry)
@@ -147,15 +211,45 @@ class MenuController
       when "n"
       when "d"
         system "clear"
-        @address_book.remove_entry(@number)
+        book = @address_book
+        book.remove_entry(entry)
+        # maintain same index of the entry deleted, since deletion will shift elements left and next entry will occupy same index as deleted entry
+        @drop_value = entry - 1
       when "e"
+        edit_entry(entry)
+        option_submenu(entry)
       when "m"
         system "clear"
         main_menu
       else
         system "clear"
         puts "#{selection} is not a valid input"
-        entries_submenu(entry)
+        option_submenu(entry)
+    end
+  end
+
+  def search_submenu(entry_number)
+    puts "\nd - delete entry"
+    puts "e - edit this entry"
+    puts "m - return to main menu"
+
+    selection = gets.chomp
+    case selection
+      when "d"
+        system "clear"
+        @address_book.remove_entry(entry_number)
+        main_menu
+      when "e"
+        system "clear"
+        edit_entry(entry_number)
+      when "m"
+        system "clear"
+        main_menu
+      else
+        system "clear"
+        puts "#{selection} is not a valid input"
+        puts entry.to_s
+        search_submenu(entry)
     end
   end
 end
