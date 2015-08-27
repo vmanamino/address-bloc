@@ -117,11 +117,21 @@ class MenuController
   end
 
   def search_entries
-
+    system "clear"
+    print "Search entries by name: "
+    name = gets.chomp
+    entry_returned = @address_book.binary_search(name)
+    puts entry_returned.to_s
   end
 
   def read_csv
-
+    system "clear"
+    puts "Read in entries from a CSV formatted file"
+    print "Enter the file: "
+    file_name = gets.chomp
+    @address_book.import_from_csv(file_name)
+    system "clear"
+    puts "Entries added!"
   end
 
   def option_submenu(entry)
